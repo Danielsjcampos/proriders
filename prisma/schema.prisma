@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  COMERCIAL
+  INSTRUTOR
+  FINANCEIRO
+  MECANICO
+  USER
+}
+
+enum LeadStatus {
+  NOVO_LEAD
+  CONTATO_INICIADO
+  QUALIFICADO
+  PROPOSTA_ENVIADA
+  NEGOCIACAO
+  GANHO
+  PERDIDO
+}
+
+enum OSStatus {
+  AGUARDANDO
+  EM_EXECUCAO
+  AGUARDANDO_PECA
+  FINALIZADO
+  ENTREGUE
+}
+
+enum TransactionType {
+  RECEITA
+  DESPESA
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  passwordHash  String
+  role          Role         @default(USER)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relationships
+  managedLeads Lead[]       @relation("ManagerLeads")
+  enrollments  Enrollment[]
+  assignedOS   ServiceOrder[] @relation("MechanicOS")
+  instructed   Course[]     @relation("InstructorCourses")
+  logs         ActivityLog[]
+
+  @@map("users")
+}
+
+model Lead {
+  id              String      @id @default(cuid())
+  name            String
+  phone           String?
+  whatsapp        String?
+  email           String?
+  origin          String?     // site, paid_traffic, whatsapp, manual
+  interest        String?     // curso, servico, peca
+  status          LeadStatus  @default(NOVO_LEAD)
+  notes           String?     @db.Text
+  tags            String[]
+  managerId       String?
+  manager         User?       @relation("ManagerLeads", fields: [managerId], references: [id])
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  interactions    Interaction[]
+  transactions    FinancialTransaction[]
+
+  @@map("leads")
+}
+
+model Interaction {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String   // call, message, email, meeting
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@map("interactions")
+}
+
+model Course {
+  id                String       @id @default(cuid())
+  name              String
+  description       String?      @db.Text
+  instructorId      String?
+  instructor        User?        @relation("InstructorCourses", fields: [instructorId], references: [id])
+  duration          String?
+  location          String?
+  price             Decimal      @db.Decimal(10, 2)
+  maxStudents       Int?
+  startDate         DateTime?
+  syllabus          String?      @db.Text
+  image             String?
+  slug              String       @unique
+  active            Boolean      @default(true)
+  
+  enrollments       Enrollment[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@map("courses")
+}
+
+model Enrollment {
+  id               String   @id @default(cuid())
+  studentId        String
+  student          User     @relation(fields: [studentId], references: [id])
+  courseId         String
+  course           Course   @relation(fields: [courseId], references: [id])
+  paymentStatus    String   @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
+  attendance       Boolean  @default(false)
+  certificateIssued Boolean @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([studentId, courseId])
+  @@map("enrollments")
+}
+
+model ServiceOrder {
+  id            String   @id @default(cuid())
+  clientName    String
+  clientPhone   String?
+  bikeModel     String
+  bikePlate     String?
+  bikeKM        Int?
+  serviceRequest String  @db.Text
+  technicalCheck String? @db.Text
+  status        OSStatus @default(AGUARDANDO)
+  mechanicId    String?
+  mechanic      User?    @relation("MechanicOS", fields: [mechanicId], references: [id])
+  value         Decimal? @db.Decimal(10, 2)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("service_orders")
+}
+
+model FinancialTransaction {
+  id          String          @id @default(cuid())
+  description String
+  amount      Decimal         @db.Decimal(10, 2)
+  type        TransactionType
+  category    String          // curso, servico, peca, operacional
+  leadId      String?
+  lead        Lead?           @relation(fields: [leadId], references: [id])
+  date        DateTime        @default(now())
+  createdAt   DateTime        @default(now())
+
+  @@map("financial_transactions")
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  details   String?  @db.Text
+  entityType String?
+  entityId   String?
+  target    String?
+  createdAt DateTime @default(now())
+
+  @@map("activity_logs")
+}
+
+model Settings {
+  id           String @id @default("singleton")
+  companyName  String @default("Pro Riders")
+  logo         String?
+  brandColor   String @default("#710409")
+  address      String?
+  phone        String?
+  email        String?
+  whatsapp     String?
+  stripeKey    String?
+  asaasKey     String?
+  metaPixelId  String?
+  googleAnalyticsId String?
+
+  @@map("settings")
+}

@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer utilities {
+  .animate-marquee {
+    animation: marquee var(--duration) linear infinite;
+  }
+
+  .animate-marquee-vertical {
+    animation: marquee-vertical var(--duration) linear infinite;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/* Global Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Red Cursor */
+body {
+  cursor: url('/cursor.svg') 0 0, auto;
+}
+
+/* Hover state for clickable elements */
+a,
+button,
+[role="button"] {
+  cursor: url('/cursor.svg') 0 0, pointer;
+}
+
+@theme {
+  --color-brand-red: #D92323;
+  --color-brand-dark: #111111;
+  --color-brand-gray: #F3F4F6;
+  --font-sans: 'Inter', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-gray-100 font-sans antialiased;
+  }
+}

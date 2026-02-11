@@ -1,0 +1,8 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <filter id="shadow" x="-2" y="-2" width="40" height="40">
+    <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-opacity="0.5"/>
+  </filter>
+  <path d="M4 4L14.5 29L19 18L29 14.5L4 4Z" fill="#D92323" stroke="white" stroke-width="2" filter="url(#shadow)"/>
+  <path d="M19 18L14.5 29L11 21L4 4L19 18Z" fill="#991B1B"/> 
+  <path d="M4 4L29 14.5L21 17L19 18L4 4Z" fill="#EF4444"/>
+</svg>
