@@ -47,6 +47,7 @@ model User {
   id            String       @id @default(cuid())
   email         String       @unique
   name          String?
+  phone         String?
   passwordHash  String
   role          Role         @default(USER)
   createdAt     DateTime     @default(now())
@@ -57,6 +58,7 @@ model User {
   enrollments  Enrollment[]
   assignedOS   ServiceOrder[] @relation("MechanicOS")
   instructed   Course[]     @relation("InstructorCourses")
+  financialTransactions FinancialTransaction[]
   logs         ActivityLog[]
 
   @@map("users")
@@ -75,6 +77,9 @@ model Lead {
   tags            String[]
   managerId       String?
   manager         User?       @relation("ManagerLeads", fields: [managerId], references: [id])
+  
+  courseDateId    String?
+  courseDate      CourseDate? @relation(fields: [courseDateId], references: [id])
   
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -101,36 +106,88 @@ model Course {
   description       String?      @db.Text
   instructorId      String?
   instructor        User?        @relation("InstructorCourses", fields: [instructorId], references: [id])
-  duration          String?
-  location          String?
-  price             Decimal      @db.Decimal(10, 2)
-  maxStudents       Int?
-  startDate         DateTime?
   syllabus          String?      @db.Text
+  content           String?      @db.Text    // New: Rich text for course schedule
+  schedule          Json?        // New: Structured schedule (Day 1, Day 2...)
+  learningOutcomes  String[]     // New: "What you will learn" bullet points
   image             String?
   slug              String       @unique
+  type              String       @default("CURSO") // New: CURSO, EVENTO, TRACK_DAY
+  status            String       @default("PUBLICADO") // New: PUBLICADO, RASCUNHO, OCULTO
+  certificateLayout String?      // New
+  badgeLayout       String?      // New
   active            Boolean      @default(true)
   
-  enrollments       Enrollment[]
+  dates             CourseDate[]
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
   @@map("courses")
 }
 
-model Enrollment {
-  id               String   @id @default(cuid())
-  studentId        String
-  student          User     @relation(fields: [studentId], references: [id])
-  courseId         String
-  course           Course   @relation(fields: [courseId], references: [id])
-  paymentStatus    String   @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
-  attendance       Boolean  @default(false)
-  certificateIssued Boolean @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+model CourseDate {
+  id                String       @id @default(cuid())
+  courseId          String
+  course            Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  slug              String       @unique // For the dynamic LP: /inscricao/slug-da-data
+  startDate         DateTime
+  endDate           DateTime?
+  timeStart         String?
+  timeEnd           String?
+  
+  // New: Detailed Address
+  cep               String?
+  address           String?
+  number            String?
+  neighborhood      String?
+  city              String?
+  state             String?
+  location          String       // Header location (e.g. "São Paulo - SP")
+  latitude          Float?
+  longitude         Float?
+  mapUrl            String?
+  
+  instructorName    String?      // New: If different from course instructor
+  instructorImage   String?      // New
+  instructorBio     String?      @db.Text // New
+  coverImage        String?      // New
+  videoUrl          String?      // New
+  modality          String       @default("Presencial") // New
+  billingType       String       @default("NACIONAL") // New
+  schedule          Json?        // Schedule for this course date (array of {day, title, topics[]})
+  
+  price             Decimal      @db.Decimal(10, 2)
+  priceRecycling    Decimal?     @db.Decimal(10, 2) // New
+  
+  maxStudents       Int
+  enrolledCount     Int          @default(0)
+  active            Boolean      @default(true)
+  
+  enrollments       Enrollment[]
+  leads             Lead[]
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
-  @@unique([studentId, courseId])
+  @@map("course_dates")
+}
+
+model Enrollment {
+  id               String      @id @default(cuid())
+  studentId        String
+  student          User        @relation(fields: [studentId], references: [id])
+  courseDateId     String
+  courseDate       CourseDate  @relation(fields: [courseDateId], references: [id])
+  paymentStatus    String      @default("PENDENTE") // PENDENTE, PAGO, CANCELADO
+  paymentMethod    String?     // PIX, CARTAO, BOLETO, DINHEIRO
+  amountPaid       Decimal     @default(0) @db.Decimal(10, 2)
+  totalAmount      Decimal     @default(0) @db.Decimal(10, 2)
+  attendance       Boolean     @default(false)
+  certificateIssued Boolean    @default(false)
+  paymentLink      String?     // Link generated by admin
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@unique([studentId, courseDateId])
   @@map("enrollments")
 }
 
@@ -162,6 +219,8 @@ model FinancialTransaction {
   category    String          // curso, servico, peca, operacional
   leadId      String?
   lead        Lead?           @relation(fields: [leadId], references: [id])
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id])
   date        DateTime        @default(now())
   createdAt   DateTime        @default(now())
 
@@ -184,17 +243,37 @@ model ActivityLog {
 
 model Settings {
   id           String @id @default("singleton")
+  
+  // Geral
   companyName  String @default("Pro Riders")
   logo         String?
+  icon         String?
   brandColor   String @default("#710409")
+  
+  // Contato
   address      String?
   phone        String?
   email        String?
   whatsapp     String?
-  stripeKey    String?
-  asaasKey     String?
-  metaPixelId  String?
+  
+  // Pagamento
+  stripePublicKey String?
+  stripeSecretKey String?
+  asaasApiKey     String?
+  
+  // Integrações AI
+  aiProvider      String? @default("openai") // openai, gemini
+  aiApiKey        String?
+  
+  // Marketing & SEO
+  metaPixelId       String?
   googleAnalyticsId String?
+  googleTagManagerId String?
+  seoTitle          String?
+  seoDescription    String?
+  seoKeywords       String?
+  
+  updatedAt         DateTime @updatedAt @default(now())
 
   @@map("settings")
 }
