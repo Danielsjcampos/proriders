@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { Button } from './ui/button';
 
-interface LeadFormProps {
+export interface LeadFormProps {
     interest?: string;
     origin?: string;
+    courseDateId?: string;
     onSuccess?: () => void;
 }
 
-export default function LeadForm({ interest = 'Geral', origin = 'Site', onSuccess }: LeadFormProps) {
+// LeadForm Component for capturing course interest leads
+export default function LeadForm({ interest = 'Geral', origin = 'Site', courseDateId, onSuccess }: LeadFormProps) {
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [formData, setFormData] = useState({
         name: '',
@@ -29,6 +31,7 @@ export default function LeadForm({ interest = 'Geral', origin = 'Site', onSucces
                     ...formData,
                     interest,
                     origin,
+                    courseDateId,
                 }),
             });
 

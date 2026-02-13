@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Calendar, DollarSign, Navigation, CreditCard, User, PlayCircle, Trash2, Plus, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ImageUpload from '../../ui/ImageUpload';
+import ImageUpload from '@/components/ui/ImageUpload';
 
 interface CourseDateModalProps {
     courseId: string;

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/ui/header-2';
-import LeadForm from '@/components/LeadForm';
+import LeadForm from './LeadForm';
 import CourseQuiz from '@/components/CourseQuiz';
 
 export default function CourseLandingPage() {

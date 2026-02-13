@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Save, GraduationCap, Trash2, Plus, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ImageUpload from '../../ui/ImageUpload';
+import ImageUpload from '@/components/ui/ImageUpload';
 
 interface CourseTemplateModalProps {
     existingCourse?: any;
