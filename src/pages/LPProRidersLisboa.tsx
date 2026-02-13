@@ -11,11 +11,7 @@ import {
   Zap, 
   Award,
   Users,
-  Target,
   Smartphone,
-  Mail,
-  User,
-  AlertOctagon,
   Instagram
 } from 'lucide-react';
 
