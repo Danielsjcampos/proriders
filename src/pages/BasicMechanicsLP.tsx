@@ -2,7 +2,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { GridVignetteBackground } from '../components/ui/vignette-grid-background';
 import CustomTrustIndexWidget from '../components/CustomTrustIndexWidget';
-import { ChevronDown, CheckCircle2, Trophy, Gift, Calendar, Award, Activity, Star, Wrench, ArrowRight, ShieldCheck, Users, Brain, Clock } from 'lucide-react';
+import { ChevronDown, CheckCircle2, Award, Activity, Star, Wrench, ArrowRight, ShieldCheck, Brain } from 'lucide-react';
 import AnimatedShaderBackground from '../components/ui/animated-shader-background';
 import { ShinyButton } from '../components/ui/shiny-button';
 import { StarsBackground } from '../components/ui/stars';
@@ -104,7 +104,7 @@ const AchievementRow = ({ icon: Icon, text }: { icon: any, text: string }) => (
 );
 
 const BasicMechanicsLP = () => {
-    const modulesRef = useRef(null);
+    const modulesRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress: modulesScrollY } = useScroll({
         target: modulesRef,
         offset: ["start end", "end start"]

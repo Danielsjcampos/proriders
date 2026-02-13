@@ -83,7 +83,6 @@ export default function CourseLandingPage() {
 
     const { course } = courseDate;
     const startDate = new Date(courseDate.startDate);
-    const endDate = courseDate.endDate ? new Date(courseDate.endDate) : null;
     const spotsLeft = Math.max(0, courseDate.maxStudents - courseDate.enrolledCount);
 
     const scrollToRegistration = () => {
@@ -404,7 +403,7 @@ export default function CourseLandingPage() {
                                                                     <LeadForm 
                                                                         interest={`${course.name} - ${courseDate.location}`} 
                                                                         origin={`LP ${courseDate.slug}`} 
-                                                                        courseDateId={courseDate.id}
+                                                                         courseDateId={courseDate.id as string}
                                                                         onSuccess={() => setFunnelStep('quiz')}
                                                                     />
                                                                 </div>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Save, GraduationCap, Trash2, Plus, Calendar, ClipboardList } from 'lucide-react';
+import { X, Save, GraduationCap, Trash2, Plus, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ImageUpload from '@/components/ui/ImageUpload';
+import ImageUpload from '../../ui/ImageUpload';
 
 interface CourseTemplateModalProps {
     existingCourse?: any;
@@ -408,14 +408,14 @@ export default function CourseTemplateModal({ existingCourse, initialData, onClo
                             <ImageUpload 
                                 label="Imagem/Layout do Certificado"
                                 value={formData.certificateLayout}
-                                onChange={(url) => setFormData({ ...formData, certificateLayout: url })}
+                                onChange={(url: string) => setFormData({ ...formData, certificateLayout: url })}
                             />
                         </div>
                         <div className="space-y-2">
                             <ImageUpload 
                                 label="Imagem/Layout do Crachá"
                                 value={formData.badgeLayout}
-                                onChange={(url) => setFormData({ ...formData, badgeLayout: url })}
+                                onChange={(url: string) => setFormData({ ...formData, badgeLayout: url })}
                             />
                         </div>
                     </div>
@@ -425,7 +425,7 @@ export default function CourseTemplateModal({ existingCourse, initialData, onClo
                         <ImageUpload 
                             label="Imagem de Capa (Curso)"
                             value={formData.image}
-                            onChange={(url) => setFormData({ ...formData, image: url })}
+                            onChange={(url: string) => setFormData({ ...formData, image: url })}
                         />
                     </div>
 

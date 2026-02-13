@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Calendar, DollarSign, Navigation, CreditCard, User, PlayCircle, Trash2, Plus, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ImageUpload from '@/components/ui/ImageUpload';
+import ImageUpload from '../../ui/ImageUpload';
 
 interface CourseDateModalProps {
     courseId: string;
@@ -519,7 +519,7 @@ export default function CourseDateModal({ courseId, existingDate, initialData, o
                                 <ImageUpload 
                                     label="Foto do Instrutor"
                                     value={formData.instructorImage}
-                                    onChange={(url) => setFormData({ ...formData, instructorImage: url })}
+                                    onChange={(url: string) => setFormData({ ...formData, instructorImage: url })}
                                 />
                             </div>
                             <div className="space-y-2">
@@ -552,7 +552,7 @@ export default function CourseDateModal({ courseId, existingDate, initialData, o
                             <ImageUpload 
                                 label="Imagem de Capa (Turma)"
                                 value={formData.coverImage}
-                                onChange={(url) => setFormData({ ...formData, coverImage: url })}
+                                onChange={(url: string) => setFormData({ ...formData, coverImage: url })}
                             />
                         </div>
 

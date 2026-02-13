@@ -67,10 +67,10 @@ const TrustIndexWidget = ({ widgetId }: TrustIndexWidgetProps) => {
             )}
 
             {/* Scripts */}
-            <script defer async src='https://cdn.trustindex.io/loader.js?471da9b649aa4935824696df2f2'></script>
+            <script defer async src={`https://cdn.trustindex.io/loader.js?${widgetId}`}></script>
 
             {/* Widget Container */}
-            <div className="trustindex-google-widget w-full h-full" data-widget-id="471da9b649aa4935824696df2f2"></div>
+            <div className="trustindex-google-widget w-full h-full" data-widget-id={widgetId}></div>
         </div>
     );
 };
