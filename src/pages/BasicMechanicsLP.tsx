@@ -103,6 +103,13 @@ const AchievementRow = ({ icon: Icon, text }: { icon: any, text: string }) => (
     </div>
 );
 
+const FeatureItem = ({ icon: Icon, text }: { icon: any; text: string }) => (
+    <div className="flex items-center gap-3 text-gray-300">
+        <Icon size={18} className="text-[#D4AF37]" />
+        <span className="font-medium text-sm">{text}</span>
+    </div>
+);
+
 const BasicMechanicsLP = () => {
     const modulesRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress: modulesScrollY } = useScroll({
