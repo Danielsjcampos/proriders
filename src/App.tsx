@@ -12,6 +12,9 @@ import KanbanBoard from './components/admin/CRM/Kanban';
 import CourseManagement from './components/admin/Courses/CourseManagement';
 import WorkshopManagement from './components/admin/Workshop/WorkshopManagement';
 import FinancialDashboard from './components/admin/Financial/FinancialDashboard';
+import RegistrationStatus from './pages/RegistrationStatus';
+import SettingsPage from './components/admin/Settings/SettingsPage';
+import LPProRidersLisboa from '@/pages/LPProRidersLisboa';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { token, isLoading } = useAuth();
@@ -29,6 +32,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cursos/:slug" element={<CourseLandingPage />} />
+          <Route path="/inscricao/lisboa-2026" element={<LPProRidersLisboa />} />
+          <Route path="/status/:id" element={<RegistrationStatus />} />
           <Route path="/curso-revisao-avancada" element={<AdvancedCourseLP />} />
           <Route path="/curso-mecanica-basica-e-ergonomia" element={<BasicMechanicsLP />} />
 
@@ -45,7 +50,7 @@ function App() {
                     <Route path="courses" element={<CourseManagement />} />
                     <Route path="workshop" element={<WorkshopManagement />} />
                     <Route path="financial" element={<FinancialDashboard />} />
-                    <Route path="settings" element={<div>Configurações (Em breve)</div>} />
+                    <Route path="settings" element={<SettingsPage />} />
                   </Routes>
                 </AdminLayout>
               </ProtectedRoute>

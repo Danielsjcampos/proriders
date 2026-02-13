@@ -134,6 +134,8 @@ const AdvancedCourseLP = () => {
         // No, let's stick to the global one first as it's cleaner.
     }, []);
 
+
+
     return (
         <div className="bg-[#050505] min-h-screen text-gray-100 font-sans selection:bg-brand-red selection:text-white overflow-x-hidden">
 
@@ -330,6 +332,8 @@ const AdvancedCourseLP = () => {
                     </div>
                 </div>
             </section>
+            
+
 
             {/* 4. INSIDE THE COURSE (MODULES) */}
             <section ref={modulesRef} className="py-24 bg-[#0a0a0a] relative overflow-hidden">
